@@ -6,7 +6,7 @@ func solution(_ brown:Int, _ yellow:Int) -> [Int] {
     } 
     let mid = Int(yellow/2)    
     
-    for height in 1...mid where yellow % height == 0 {
+    for height in 1...mid where yellow.isMultiple(of: height) {
         let width = Int(yellow/height)
         let totalArea = (width + 2)*(height + 2) 
         let newBrown = totalArea - yellow
