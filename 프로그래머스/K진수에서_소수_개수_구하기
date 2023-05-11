@@ -1,0 +1,32 @@
+func solution(_ n:Int, _ k:Int) -> Int {
+    let newValue = String(n, radix: k)
+    let arr = newValue.split(separator: "0")
+        .map{ Int($0)! }
+        .filter{ $0 > 1 && checkPrime($0) }
+    
+    return arr.count
+}
+
+var mem: Set<Int>!
+
+func checkPrime(_ num: Int) -> Bool {
+    mem = Set()
+    
+    if num < 4 {
+        return num == 1 ? false : true
+    }
+    if mem.contains(num) { return true }
+    
+    for index in 2...Int(sqrt(Double(num))) where num.isMultiple(of: index) {
+        return false
+    }
+    
+    mem.insert(num)
+    return true
+}
+
+// ** 배운거 
+// 1. radix로 K진수를 쉽게 구할 수 있다.
+// 2. 소수 구하기 맨날 까먹는데 간단하게 두 가지로 성능 개선하자
+//   1) sqrt까지만 
+//   2) set으로 이미 판명난 얘들은 체크해주기
