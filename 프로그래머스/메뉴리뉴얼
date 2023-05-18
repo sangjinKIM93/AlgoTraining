@@ -1,0 +1,62 @@
+func solution(_ orders:[String], _ course:[Int]) -> [String] {
+    
+    var dict = [String: Int]()
+    
+    func combination(_ array: [String], _ n: Int) {
+        if array.count < n { return }
+
+        func cycle(_ index: Int, _ now: [String]) {
+            if now.count == n {
+                let str = now.joined(separator: "")
+                if dict[str] == nil {
+                    dict[str] = 1
+                } else {
+                    dict[str]! += 1
+                }
+                return
+            }
+
+            for i in index..<array.count {
+                cycle(i + 1, now + [array[i]])
+            }
+        }
+        cycle(0,[])
+    }
+    
+    func getFavoriteCourse() -> [(String, Int)] {
+        var max = 1
+        var tempCourses: [(String, Int)] = []
+        
+        for (key, value) in dict {
+            guard value > 1 else {
+                continue
+            }
+            if value > max {
+                tempCourses.removeAll()
+                tempCourses.append((key, value))
+                max = value
+            }
+            else if value == max {
+                tempCourses.append((key, value))
+            }
+        }
+        
+        return tempCourses
+    }
+    
+    var newCourses: [(String, Int)] = []
+
+    // 각 count별로 가장 인기가 많은 조합을 찾는다(중복 허용)
+    for count in course {
+        for order in orders {
+            // 에러케이스: order는 오름차순으로 정렬되어 있지 않아
+            let arr = Array(order).map{String($0)}.sorted{ $0 < $1 }
+            combination(arr, count)
+        }
+        
+        let tempCourses = getFavoriteCourse()
+        newCourses.append(contentsOf: tempCourses)
+        dict = [:]
+    }
+    return newCourses.map { $0.0 }.sorted { $0 < $1 }
+}
